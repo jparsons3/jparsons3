@@ -4,4 +4,7 @@
 
 - [Active Directory Home Lab](https://github.com/joshmadakor1/Algorithms-Practice)
 
-<h2>🐍 Python Projects</h2>
+<h2>🐍 Python Projects:</h2>
+
+- [Email Script](https://github.com/jparsons3/jparsons3/blob/da27b07b04176490f630b3044dfaa24827461532/sendemail.py)
+- [Coffee Machine]() 
