@@ -58,33 +58,15 @@ Login and password to VM in VMware is PW:adhd
         python3 vol. -f /mnt/c/tools/volatility_2.6_win64_standalone/memdump.vmem netscan
         
         ```
-        
-        ![This is what the beginning of the program will look like](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled.png)
-        
-        This is what the beginning of the program will look like
-        
+                
         ---
         
-        <aside>
-        ✂️ This is the output that you want to get while looking for any process with just
-        
-        </aside>
-        
-        ![0.0.0.0 is just listening on a specific port](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%201.png)
-        
-        0.0.0.0 is just listening on a specific port
-        
-        - What if you want to look at the process ID? (Refer to section 3.)
-            
+                    
             ```c
             python3 vol.py -f /mnt/c/tools/volatility_2.6_win64_standalone/memdump.vmem windows.pslist
             
             ```
-            
-            ![[What is a PID/PPID/Wow64?](https://www.notion.so/Memory-Analysis-Dictionary-References-e7a0b7acd4c740ad8a9906a2c7c10fba?pvs=21) ](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%202.png)
-            
-            [What is a PID/PPID/Wow64?](https://www.notion.so/Memory-Analysis-Dictionary-References-e7a0b7acd4c740ad8a9906a2c7c10fba?pvs=21) 
-            
+                       
         
         > Port 445 Server Message Block ([SMB](https://www.notion.so/Network-Ports-a6c11047a76843d79e70d2e7749e236b?pvs=21)) is being used to connect to other workstations. ****This raises some red flags.**** SMB should only be getting used for ****servers to communicate with workstations**!** Not workstations directly communicating with each other.
         > 
@@ -107,7 +89,6 @@ Login and password to VM in VMware is PW:adhd
         > it is critical to do live forensics on a system to see specifically what services are being run through SVChost.exe. many SVChost came up during the forensics of the device. the command to see the services is ‘tasklist /SVC’ to see what the services are. ************************************See bottom of this page to see how to check services offline in a dump************************************
         > 
         
-        ![There are more services than what is being offered in the screenshot above. ](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%203.png)
         
         There are more services than what is being offered in the screenshot above. 
         
@@ -118,17 +99,13 @@ Login and password to VM in VMware is PW:adhd
         | PID | PPID | Imagefilename | Offset | Threads/Handles/SessionId |
         | --- | --- | --- | --- | --- |
         
-        ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%204.png)
-        
         b. right below trustme.exe, we can also see that CMD and net.exe was invoked by the PPID trustme.exe. this is the system making a connection.
         
         ---
         
         - Another way to see this information is using windows.pstree to see the process hierarchy. chrome was run by explorer, then trustme.exe was downlaoded an ran through explorer. trustme then invoked the processes cmd which invoked conhost and net.exe
             
-            ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%205.png)
             
-        
     - [Dynamic link libraries](https://www.notion.so/Memory-Analysis-Dictionary-References-e7a0b7acd4c740ad8a9906a2c7c10fba?pvs=21) are seen and run to see what DLL’s are being run with the process.
         
         ```bash
@@ -157,18 +134,13 @@ Login and password to VM in VMware is PW:adhd
         ```
         
         Malfind lit up the trustme application saying that something has been injected into the software three times
-        
-        ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%206.png)
-        
-        ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%207.png)
+
         
 
 ## How would you check the SVChost info in a offline memory dump?
 
 1. You might want to do it to find the DLL’s. take the process id and run the DLL list for the PID for the specific .exe.
     1. for the example below we are going to look at the process 1180
-    
-    ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%208.png)
     
     ```bash
     python3 vol.py -f /mnt/c/tools/volatility_2.6_win64_standalone/memdump.vmem dlllist --pid 1180
@@ -177,12 +149,10 @@ Login and password to VM in VMware is PW:adhd
 
 in this case the svchost that was chosen was loading legit DLL’s. 
 
-![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%209.png)
 
 <aside>
 💡 Something about SVChost in general, it will **************Listen************** to ports all the time but it is strange to see SVChosts making outbound connections
 
-![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%2010.png)
 
 </aside>
 
@@ -190,14 +160,10 @@ in this case the svchost that was chosen was loading legit DLL’s.
 
 we dont not want to do that. if we were to do that, it would take way too long looking at the currently running exe’s on a live machine!
 
-![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%2011.png)
-
-[https://tenor.com/view/emoji-in-distress-emoji-sad-emoji-disappearing-emoji-disintegrating-seokvrse-gif-25237004](https://tenor.com/view/emoji-in-distress-emoji-sad-emoji-disappearing-emoji-disintegrating-seokvrse-gif-25237004)
 
 1. Its best to start with looking at the network to see if there are any established connections relating to malware on the system
     1. you can run Netstat to gather that information 
-    
-    ![Untitled](Memory%20Analysis%20with%20Volatility3%2010bf867b9a2341348739f16203a50de0/Untitled%2012.png)
+
     
     ```bash
     netstat -naob
